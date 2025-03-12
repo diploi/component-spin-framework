@@ -1,47 +1,31 @@
-FROM node:22-alpine AS base
+# Use official PHP image with Apache
+FROM php:8.2-apache
 
-# This will be set by the GitHub action to the folder containing this component.
-ARG FOLDER=/app
+# Set working directory
+WORKDIR /app
 
-# Install dependencies only when needed
-FROM base AS deps
+# Install required packages
+RUN apt-get update && apt-get install -y \
+    unzip \
+    git \
+    curl \
+    libpng-dev \
+    libjpeg-dev \
+    libfreetype6-dev \
+    libzip-dev \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-install gd zip pdo pdo_mysql
 
-COPY . /app
-WORKDIR ${FOLDER}
+# Enable Apache mod_rewrite
+RUN a2enmod rewrite
 
-# Install dependencies based on the preferred package manager
-RUN \
-  if [ -f yarn.lock ]; then yarn --frozen-lockfile; \
-  elif [ -f package-lock.json ]; then npm ci; \
-  elif [ -f pnpm-lock.yaml ]; then corepack enable pnpm && pnpm i --frozen-lockfile; \
-  else echo "Lockfile not found." && exit 1; \
-  fi
+# Install Composer
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
-# Rebuild the source code only when needed
-FROM base AS builder
-COPY . /app
-WORKDIR ${FOLDER}
-COPY --from=deps ${FOLDER}/node_modules ./node_modules
+RUN composer require celarius/spin-framework
 
-RUN \
-  if [ -f yarn.lock ]; then yarn run build; \
-  elif [ -f package-lock.json ]; then npm run build; \
-  elif [ -f pnpm-lock.yaml ]; then corepack enable pnpm && pnpm run build; \
-  else echo "Lockfile not found." && exit 1; \
-  fi
+# Expose Apache port
+EXPOSE 80
 
-# Production image, copy all the files and run "npm start"
-FROM base AS runner
-
-COPY --from=builder --chown=1000:1000 /app /app
-WORKDIR ${FOLDER}
-
-ENV NODE_ENV=production
-
-USER 1000:1000
-
-EXPOSE 4321
-ENV PORT=4321
-ENV HOST="0.0.0.0"
-
-CMD ["npm", "start"]
+# Set entrypoint command
+CMD ["apache2-foreground"]

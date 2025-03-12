@@ -1,0 +1,45 @@
+<VirtualHost *:80>
+
+    Define domain.name              mydomain.com
+    Define alias.domain.name        www.mydomain.com
+    Define environment              DEV
+
+    ServerName ${domain.name}
+    ServerAlias ${alias.domain.name}
+    ServerAdmin webmaster@${domain.name}
+
+    DocumentRoot "/app/src/public"
+
+    ErrorLog "logs/error.log"
+    CustomLog "logs/access.log" common
+
+    # Default caching headers for static content in /public
+    <FilesMatch "\.(ico|pdf|flv|jpg|jpeg|png|gif|js|css|swf)$">
+      Header set Cache-Control "public, max-age=604800, must-revalidate"
+    </FilesMatch>
+
+    <Directory "${path_to_root}\src\public">
+        Options -Indexes +FollowSymLinks
+        AllowOverride All
+        Order allow,deny
+        Allow from all
+        Require all granted
+
+        # Set Variables
+        SetEnv ENVIRONMENT ${environment}
+
+        # Load files in this order on "/"
+        DirectoryIndex bootstrap.php index.php index.html
+
+        # Disable appending a "/" and 301 redirection when a directory
+        # matches the requested URL
+        DirectorySlash Off
+
+        # Set Rewrite Engine ON to direct all requests to
+        # the `bootstrap.php` file
+        RewriteEngine On
+        RewriteCond %{REQUEST_FILENAME} !-d
+        RewriteCond %{REQUEST_FILENAME} !-f
+        RewriteRule ^ bootstrap.php [QSA,L]
+    </Directory>
+</VirtualHost>
