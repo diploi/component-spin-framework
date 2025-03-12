@@ -1,22 +1,21 @@
 diploiVersion: v1.0
 type: component
-name: Astro
-description: Official Diploi component for Astro
+name: Spin Framework
+description: Experimental Spin Framework Component
 
 contexts:
   - name: app
     identifier: app
 
 hosts:
-  - name: Astro
+  - name: app
     identifier: app
     urlFormat: '[label].[default-domain]'
 
 images:
   - identifier: app
-    prebuildImage: ghcr.io/diploi/component-astro:[tag]
 
 logs:
-  - name: Astro Log
+  - name: PHP Log
     type: log
     labelSelector: app=app
