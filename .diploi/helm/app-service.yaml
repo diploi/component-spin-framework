@@ -4,7 +4,7 @@ metadata:
   name: app
 spec:
   ports:
-    - port: 4321
+    - port: 80
       name: app
   selector:
     app: app
