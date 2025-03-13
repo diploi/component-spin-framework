@@ -34,15 +34,6 @@ spec:
       securityContext:
         runAsUser: 1000
         runAsGroup: 1000
-      initContainers:
-        - name: install-dependencies
-          image: {{ .Values.images.app }}
-          imagePullPolicy: Always
-          command: ['npm', 'install']
-          workingDir: /app/{{ .Values.identifier }}
-          volumeMounts:
-            - name: app-mount
-              mountPath: /app
       {{- end }}
       containers:
         - name: app
