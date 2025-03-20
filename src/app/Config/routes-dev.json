@@ -1,0 +1,52 @@
+{
+  "common": {
+    "before": [],
+    "after": [
+      "\\App\\Middlewares\\RequestIdAfterMiddleware",
+      "\\App\\Middlewares\\ResponseTimeAfterMiddleware",
+      "\\App\\Middlewares\\ResponseLogAfterMiddleware"
+    ]
+  },
+  "groups": [
+    {
+      "name": "unversioned api endpoints",
+      "notes": "",
+      "prefix": "/api",
+      "before": [],
+      "routes": [
+        { "methods": ["GET"], "path": "/health", "handler": "\\App\\Controllers\\Api\\HealthController" },
+        { "methods": ["GET"], "path": "/status", "handler": "\\App\\Controllers\\Api\\StatusController" },
+        { "methods": ["GET"], "path": "/info", "handler": "\\App\\Controllers\\Api\\InfoController" }
+      ],
+      "after": []
+    },
+    {
+      "name": "Public",
+      "notes": "Public endpoints",
+      "prefix": "/api/v1",
+      "before": [],
+      "routes": [],
+      "after": []
+    },
+    {
+      "name": "Private",
+      "notes": "Private endpoints",
+      "prefix": "/api/v1",
+      "before": ["\\App\\Middlewares\\AuthHttpBeforeMiddleware"],
+      "routes": [],
+      "after": []
+    },
+    {
+      "name": "Default",
+      "notes": "Default route if nothing else matches",
+      "prefix": "",
+      "before": ["\\App\\Middlewares\\SessionBeforeMiddleware"],
+      "routes": [{ "methods": [], "path": "/", "handler": "\\App\\Controllers\\IndexController" }],
+      "after": []
+    }
+  ],
+  "errors": {
+    "4xx": "\\App\\Controllers\\Error4xxController",
+    "5xx": "\\App\\Controllers\\Error5xxController"
+  }
+}
