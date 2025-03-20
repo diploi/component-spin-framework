@@ -23,18 +23,12 @@ RUN a2enmod rewrite
 # Install Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
-# Import project
-COPY . /app
-
 # Set working directory
 WORKDIR ${FOLDER}
 
 # Apache configuration 
 COPY ${IDENTIFIER}/000-default.conf /etc/apache2/sites-available
 COPY ${IDENTIFIER}/entrypoint.sh /entrypoint.sh
-
-# Install dependencies
-RUN composer update -o --no-dev  
 
 # Expose Apache port
 EXPOSE 80
