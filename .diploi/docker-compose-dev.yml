@@ -1,0 +1,17 @@
+# This is useful for for debugging Dockerfile locally
+services:
+  app:
+    build:
+      context: .
+      dockerfile: 'component/Dockerfile.dev'
+      args:
+        FOLDER: '/app/component'
+        IDENTIFIER: 'component'
+    container_name: spin-component-test-dev
+    volumes:
+      - .:/app # Live sync for fast iteration
+    working_dir: /app
+    ports:
+      - '80:80'
+    environment:
+      - FOLDER=/app/component
