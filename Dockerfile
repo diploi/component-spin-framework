@@ -12,9 +12,9 @@ RUN apt-get update && apt-get install -y \
     libpng-dev \
     libjpeg-dev \
     libfreetype6-dev \
-    libzip-dev \
-    && docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install gd zip pdo pdo_mysql
+    libzip-dev
+    #&& docker-php-ext-configure gd --with-freetype --with-jpeg \
+    #&& docker-php-ext-install gd zip pdo pdo_mysql
 
 # Enable Apache mod_rewrite
 RUN a2enmod rewrite
@@ -30,6 +30,12 @@ WORKDIR ${FOLDER}
 
 # Install dependencies
 RUN composer update -o --no-dev  
+
+# Add user 1000
+RUN groupadd -g 1000 www && \
+    useradd -u 1000 -g 1000 -m -s /bin/bash www
+
+USER 0
 
 # Expose Apache port
 EXPOSE 80

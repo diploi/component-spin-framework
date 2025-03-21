@@ -12,3 +12,5 @@ services:
       - '80:80'
     environment:
       - FOLDER=/app/component
+      - APACHE_RUN_USER=www
+      - APACHE_RUN_GROUP=www

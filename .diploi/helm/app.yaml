@@ -55,6 +55,10 @@ spec:
               value: {{ .Values.stage }}
             - name: FOLDER
               value: /app/{{ .Values.identifier }}
+            - name: APACHE_RUN_USER
+              value: www
+            - name: APACHE_RUN_GROUP
+              value: www
           volumeMounts:
             {{- if hasKey .Values.storage "code" }}
             - name: app-mount
