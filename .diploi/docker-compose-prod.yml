@@ -6,7 +6,6 @@ services:
       dockerfile: 'component/Dockerfile'
       args:
         FOLDER: '/app/component'
-        IDENTIFIER: 'component'
     container_name: spin-component-test-prod
     working_dir: /app
     ports:

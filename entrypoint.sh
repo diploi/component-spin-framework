@@ -6,6 +6,7 @@
 
 # Replace placeholder in the Apache config with the current component folder 
 # (seems there is no way to do this dynamically in apache)
+cp ${FOLDER}/000-default.conf /etc/apache2/sites-available/000-default.conf
 sed -i "s|\${FOLDER}|${FOLDER}|g" /etc/apache2/sites-available/000-default.conf
 
 # Run composer on first start in dev version

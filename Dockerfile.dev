@@ -3,7 +3,6 @@ FROM php:8.3-apache
 
 # This will be set by the GitHub action to the folder containing this component.
 ARG FOLDER=/app/component-name
-ARG IDENTIFIER=component-name
 
 # Install required packages
 RUN apt-get update && apt-get install -y \
@@ -26,12 +25,8 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 # Set working directory
 WORKDIR ${FOLDER}
 
-# Apache configuration 
-COPY ${IDENTIFIER}/000-default.conf /etc/apache2/sites-available
-COPY ${IDENTIFIER}/entrypoint.sh /entrypoint.sh
-
 # Expose Apache port
 EXPOSE 80
 
 # Set entrypoint command
-ENTRYPOINT ["/entrypoint.sh"]
+ENTRYPOINT $FOLDER/entrypoint.sh
